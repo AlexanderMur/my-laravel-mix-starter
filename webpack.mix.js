@@ -10,6 +10,8 @@ const isBuild = process.env.npm_lifecycle_event === 'build'
 // JS files compiling using laravel-mix and react babel presets
 mix.react('src/index.js', 'dist')
     .setPublicPath('dist')
+    .setResourceRoot('/dist')
+
 /** With this we can extract sass code imported in react components **/
 const rulesConfig = () => {
     const rulesArray = []
@@ -68,6 +70,11 @@ mix.webpackConfig({
         fs: 'empty',
         module: 'empty',
     },
+    externals: {
+        // require("jquery") is external and available
+        //  on the global var jQuery
+        "jquery": "jQuery"
+    }
     // devtool: 'cheap-module-eval-source-map',
 })
     .sourceMaps()
