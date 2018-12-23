@@ -4,10 +4,11 @@ const mix = require('laravel-mix')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const isHMR = process.env.npm_lifecycle_event === 'hot'
+const isWatch = process.env.npm_lifecycle_event === 'development'
+const isBuild = process.env.npm_lifecycle_event === 'build'
 
 // JS files compiling using laravel-mix and react babel presets
 mix.react('src/index.js', 'dist')
-// .react('resources/assets/js/frontend/main.js', 'public/frontend')
     .setPublicPath('dist')
 /** With this we can extract sass code imported in react components **/
 const rulesConfig = () => {
@@ -77,7 +78,6 @@ mix.webpackConfig({
 // https://github.com/JeffreyWay/laravel-mix/issues/1483
 Mix.listen('configReady', (webpackConfig) => {
     if (Mix.isUsing('hmr')) {
-        console.log('aaa')
         // Remove leading '/' from entry keys
         webpackConfig.entry = Object.keys(webpackConfig.entry).reduce((entries, entry) => {
             entries[entry.replace(/^\//, '')] = webpackConfig.entry[entry]
@@ -95,21 +95,19 @@ Mix.listen('configReady', (webpackConfig) => {
 
 // Versioning/Cache Busting
 // Version does not work in hmr mode
-if (!isHMR) {
+if (isBuild) {
     mix.version()
+}
+
+if (isWatch) {
+    mix.browserSync()
 }
 mix.browserSync({
     proxy: '',
     files: [
-        'dist/*.css',
+        'dist/**/*.css',
     ],
     server: {
         baseDir: './',
     },
-})
-// Don't process image files in sass
-// Images paths are written relative to compiled CSS
-mix.options({
-    extractVueStyles: false,
-    processCssUrls: false,
 })
