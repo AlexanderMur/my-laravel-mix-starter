@@ -6,8 +6,10 @@
                     <div class="card-header">Example Component</div>
 
                     <div class="card-body">
-                        I'm an example component.31311aaaa
+                        I'm an example component.31311
                     </div>
+                    Clicked: {{i}} times! HOT
+                    <button v-on:click="i++">Click me!!!!</button>
                 </div>
             </div>
         </div>
@@ -16,6 +18,11 @@
 
 <script>
     export default {
+        data(){
+          return {
+              i: 0
+          }
+        },
         name: 'example-component',
         mounted() {
             console.log('Component mounted.')
